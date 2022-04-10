@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 public class RegistrationDTO {
-    @NotEmpty
+
     private Integer id;
     @NotEmpty
     private String name;
