@@ -3,6 +3,7 @@ package com.womakerscode.microservicemeetup.controller;
 import com.womakerscode.microservicemeetup.controller.exceptions.ApiErrors;
 import com.womakerscode.microservicemeetup.exception.BusinessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,7 +29,7 @@ public class ApplicationControllerAdvice {
 
     @ExceptionHandler(ResponseStatusException.class)
     @ResponseStatus
-    public ApiErrors handlerResponseStatusException(ResponseStatusException e) {
-        return new ApiErrors(e);
+    public ResponseEntity handlerResponseStatusException(ResponseStatusException ex) {
+        return new ResponseEntity(new ApiErrors(ex), ex.getStatus());
     }
 }
