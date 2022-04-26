@@ -2,7 +2,11 @@ package com.womakerscode.microservicemeetup.controller;
 
 import com.womakerscode.microservicemeetup.model.RegistrationDTO;
 import com.womakerscode.microservicemeetup.model.entity.Registration;
+import com.womakerscode.microservicemeetup.model.request.ReqRegistrationDTO;
 import com.womakerscode.microservicemeetup.service.RegistrationService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -28,15 +32,29 @@ public class RegistrationController {
 
     }
 
+
+    @ApiOperation(value = "Creating a new registration")
+    @ApiResponses( value ={
+            @ApiResponse(code = 201, message = "Registration created with success"),
+            @ApiResponse(code = 400, message = "There is any information invalid in the body"),
+            @ApiResponse(code = 500, message = "It had an internal trouble")
+
+    })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public RegistrationDTO create(@RequestBody @Valid RegistrationDTO registrationDTO) {
-        Registration entity = modelMapper.map(registrationDTO, Registration.class);
+    public RegistrationDTO create(@RequestBody @Valid ReqRegistrationDTO reqRegistrationDTO) {
+        Registration entity = modelMapper.map(reqRegistrationDTO, Registration.class);
         entity = registrationService.save(entity);
 
         return modelMapper.map(entity, RegistrationDTO.class);
     }
 
+    @ApiOperation(value = "Getting a specific registration by id")
+    @ApiResponses( value ={
+            @ApiResponse(code = 201, message = "Getting an registration with success"),
+            @ApiResponse(code = 500, message = "It had an internal trouble")
+
+    })
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public RegistrationDTO get (@PathVariable Integer id) {
@@ -47,6 +65,12 @@ public class RegistrationController {
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @ApiOperation(value = "Delleting a registration")
+    @ApiResponses( value ={
+            @ApiResponse(code = 201, message = "Delleting with success"),
+            @ApiResponse(code = 500, message = "It had an internal trouble")
+
+    })
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteByRegistrationId(@PathVariable Integer id) {
@@ -55,17 +79,31 @@ public class RegistrationController {
     }
 
 
+    @ApiOperation(value = "Updatting a registration")
+    @ApiResponses( value ={
+            @ApiResponse(code = 201, message = "Updatting with success"),
+            @ApiResponse(code = 404, message = "Not Found"),
+            @ApiResponse(code = 500, message = "It had an internal trouble")
+
+    })
     @PutMapping("{id}")
-    public RegistrationDTO update(@PathVariable Integer id, RegistrationDTO registrationDTO) {
+    public RegistrationDTO update(@PathVariable Integer id, @RequestBody ReqRegistrationDTO reqRegistrationDTO) {
         return registrationService.getRegistrationById(id).map(registration -> {
-           registration.setName(registrationDTO.getName());
-           registration.setDateOfRegistration(registrationDTO.getDateOfRegistration());
+           registration.setName(reqRegistrationDTO.getName());
+           registration.setDateOfRegistration(reqRegistrationDTO.getDateOfRegistration());
            registration = registrationService.update(registration);
 
            return modelMapper.map(registration, RegistrationDTO.class);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+
+    @ApiOperation(value = "Getting all registrations by order")
+    @ApiResponses( value ={
+            @ApiResponse(code = 201, message = "Getting all registrations with success"),
+            @ApiResponse(code = 500, message = "It had an internal trouble")
+
+    })
     @GetMapping
     public Page<RegistrationDTO> find(RegistrationDTO dto, Pageable pageRequest) {
         Registration filter = modelMapper.map(dto, Registration.class);

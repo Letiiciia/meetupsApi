@@ -6,13 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table
+@Table(name = "registration")
 public class Registration {
 
     @Id
@@ -24,7 +25,7 @@ public class Registration {
     private String name;
 
     @Column(name="date_of_registration")
-    private String dateOfRegistration;
+    private LocalDate dateOfRegistration;
 
     @Column
     private String registration;

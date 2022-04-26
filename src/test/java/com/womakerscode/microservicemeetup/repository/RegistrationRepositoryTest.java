@@ -1,6 +1,5 @@
 package com.womakerscode.microservicemeetup.repository;
 
-import com.womakerscode.microservicemeetup.model.RegistrationDTO;
 import com.womakerscode.microservicemeetup.model.entity.Registration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -100,6 +100,6 @@ public class RegistrationRepositoryTest {
 
 
     private Registration createNewRegistration(String registration) {
-        return Registration.builder().name("Ana Neri").dateOfRegistration("10/10/2022").registration(registration).build();
+        return Registration.builder().name("Ana Neri").dateOfRegistration(LocalDate.now()).registration(registration).build();
     }
 }

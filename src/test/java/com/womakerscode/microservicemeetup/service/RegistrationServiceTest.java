@@ -200,7 +200,7 @@ public class RegistrationServiceTest {
         return Registration.builder()
                 .id(101)
                 .name("Ana Neri")
-                .dateOfRegistration("2022-04-06")
+                .dateOfRegistration(LocalDate.now())
                 .registration("001")
                 .build();
 
