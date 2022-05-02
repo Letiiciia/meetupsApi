@@ -1,13 +1,13 @@
 package com.womakerscode.microservicemeetup.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
+
+@ToString(exclude = "meetup")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -29,6 +29,11 @@ public class Registration {
 
     @Column
     private String registration;
+
+    @JoinColumn(name = "id")
+    @ManyToOne
+    @JsonIgnore
+    private Meetup meetup;
 
 
 }

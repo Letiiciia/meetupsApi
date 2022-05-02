@@ -1,5 +1,6 @@
-package com.womakerscode.microservicemeetup.model;
+package com.womakerscode.microservicemeetup.controller.dto;
 
+import com.womakerscode.microservicemeetup.model.entity.Meetup;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,18 +8,20 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RegistrationDTO {
+public class RequisitionRegistrationDTO {
 
-    private Integer id;
     @NotEmpty
     private String name;
 
     private LocalDate dateOfRegistration;
     @NotEmpty
     private String registration;
+
+    private Integer meetupId;
 }

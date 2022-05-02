@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS  registration (
     PRIMARY KEY (registration_id)
 );
 
-INSERT INTO registration (registration_id, person_name, date_of_registration, registration) VALUES('1', 'Leticia Lima', sysdate, '001');
+--INSERT INTO registration (registration_id, person_name, date_of_registration, registration) VALUES('1', 'Leticia Lima', sysdate, '001');

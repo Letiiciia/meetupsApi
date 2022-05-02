@@ -1,5 +1,6 @@
-package com.womakerscode.microservicemeetup.model.request;
+package com.womakerscode.microservicemeetup.controller.dto;
 
+import com.womakerscode.microservicemeetup.model.entity.Meetup;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +13,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReqRegistrationDTO {
+public class ResponseRegistrationDTO {
 
+    private Integer id;
     @NotEmpty
     private String name;
 
     private LocalDate dateOfRegistration;
     @NotEmpty
     private String registration;
+
+    private ResponseMeetupDTO meetup;
 }
