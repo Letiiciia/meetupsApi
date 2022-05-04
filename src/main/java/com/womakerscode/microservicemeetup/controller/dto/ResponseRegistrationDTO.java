@@ -23,5 +23,6 @@ public class ResponseRegistrationDTO {
     @NotEmpty
     private String nickName;
 
+
     private ResponseMeetupDTO meetup;
 }

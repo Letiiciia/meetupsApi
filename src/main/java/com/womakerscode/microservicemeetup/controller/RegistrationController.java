@@ -1,7 +1,6 @@
 package com.womakerscode.microservicemeetup.controller;
 
 import com.womakerscode.microservicemeetup.controller.dto.ResponseRegistrationDTO;
-import com.womakerscode.microservicemeetup.controller.dto.converter.RegistrationToResponseRegistrationDTO;
 import com.womakerscode.microservicemeetup.controller.dto.converter.RequisitionRegistrationDTOToRegistration;
 import com.womakerscode.microservicemeetup.exception.BusinessException;
 import com.womakerscode.microservicemeetup.model.entity.Meetup;
@@ -13,7 +12,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
-import org.aspectj.bridge.IMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,7 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -61,7 +58,7 @@ public class RegistrationController {
             message = "Registration already created";
         }else{
 
-            message = "Created Registration of " + requisitionRegistrationDTO.getName() + " to meetup" + meetup.getMeetupName();
+            message = "Created Registration of " + requisitionRegistrationDTO.getName() + " to meetup " + meetup.getMeetupName();
         }
 
 
@@ -106,16 +103,17 @@ public class RegistrationController {
 
     })
     @PutMapping("{id}")
-    public ResponseRegistrationDTO update(@PathVariable Integer id, @RequestBody RequisitionRegistrationDTO requisitionRegistrationDTO) {
-        return registrationService.getRegistrationById(id).map(registration -> {
+    public ResponseEntity update(@PathVariable Integer id, @RequestBody RequisitionRegistrationDTO requisitionRegistrationDTO) {
+        registrationService.getRegistrationById(id).map(registration -> {
             registration.setName(requisitionRegistrationDTO.getName());
             registration.setDateOfRegistration(requisitionRegistrationDTO.getDateOfRegistration());
             registration = registrationService.update(registration);
 
             return modelMapper.map(registration, ResponseRegistrationDTO.class);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        String message = "Updated";
+        return ResponseEntity.status(HttpStatus.OK).body(message);
     }
-
 
     @ApiOperation(value = "Getting all registrations by order")
     @ApiResponses(value = {
