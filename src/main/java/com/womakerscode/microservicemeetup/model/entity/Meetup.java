@@ -26,7 +26,7 @@ public class Meetup {
     @Column(name="meetup_name")
     private String meetupName;
 
-    @Column(name="meetup_sate")
+    @Column(name="meetup_date")
     private LocalDate meetupDate;
 
     private boolean registrated;

@@ -33,7 +33,7 @@ public class RegistrationRepositoryTest {
         Registration registration_attribute = createNewRegistration(registration);
         entityManager.persist(registration_attribute);
 
-        boolean exists = repository.existsByRegistration(registration);
+        boolean exists = repository.existsByNickName(registration);
 
         assertThat(exists).isTrue();
 
@@ -46,7 +46,7 @@ public class RegistrationRepositoryTest {
     public void returnFalseWhenRegistrationAttributeDoesntExists() {
         String registration = "123";
 
-        boolean exists = repository.existsByRegistration(registration);
+        boolean exists = repository.existsByNickName(registration);
 
         assertThat(exists).isFalse();
 
@@ -100,6 +100,6 @@ public class RegistrationRepositoryTest {
 
 
     private Registration createNewRegistration(String registration) {
-        return Registration.builder().name("Ana Neri").dateOfRegistration(LocalDate.now()).registration(registration).build();
+        return Registration.builder().name("Ana Neri").dateOfRegistration(LocalDate.now()).nickName(registration).build();
     }
 }

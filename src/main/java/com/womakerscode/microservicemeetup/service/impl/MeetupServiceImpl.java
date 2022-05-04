@@ -2,7 +2,11 @@ package com.womakerscode.microservicemeetup.service.impl;
 
 import com.womakerscode.microservicemeetup.controller.dto.RequisitionMeetupDTO;
 import com.womakerscode.microservicemeetup.controller.dto.ResponseMeetupDTO;
+import com.womakerscode.microservicemeetup.controller.dto.converter.MeetupToResponseMeetupDTO;
+import com.womakerscode.microservicemeetup.controller.dto.converter.RegistrationToResponseRegistrationDTO;
+import com.womakerscode.microservicemeetup.controller.dto.converter.RequisitionMeetupDTOToMeetup;
 import com.womakerscode.microservicemeetup.model.entity.Meetup;
+import com.womakerscode.microservicemeetup.model.entity.Registration;
 import com.womakerscode.microservicemeetup.repository.MeetupRepository;
 import com.womakerscode.microservicemeetup.service.MeetupService;
 import lombok.AllArgsConstructor;
@@ -55,15 +59,22 @@ public class MeetupServiceImpl implements MeetupService {
         if(meetup == null) {
             return new Throwable("Event id not identified!");
         }
-        ResponseMeetupDTO updated = ResponseMeetupDTO.builder()
-                .id(id)
-                .meetupName(requisitionMeetupDTO.getMeetupName())
-                .meetupDate(requisitionMeetupDTO.getMeetupDate())
-                .registrated(requisitionMeetupDTO.isRegistrated())
-                .registration(meetup.getRegistration())
-                .build();
+        Meetup updated = RequisitionMeetupDTOToMeetup.convert(requisitionMeetupDTO, id);
 
+        Meetup saved = this.meetupRepository.save(updated);
 
-        return updated;
+        ResponseMeetupDTO responseUpdate = MeetupToResponseMeetupDTO.convert(saved);
+        return responseUpdate;
     }
+
+    @Override
+    public void delete(Meetup meetup) {
+        if (meetup == null || meetup.getId() == null) {
+            throw new IllegalArgumentException("Meetup cannot be null");
+        }
+    this.meetupRepository.delete(meetup);
+
+    }
+
+
 }

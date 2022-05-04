@@ -21,7 +21,7 @@ public class RequisitionRegistrationDTO {
 
     private LocalDate dateOfRegistration;
     @NotEmpty
-    private String registration;
+    private String nickName;
 
     private Integer meetupId;
 }

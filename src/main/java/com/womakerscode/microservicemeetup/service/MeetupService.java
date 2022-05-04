@@ -16,4 +16,6 @@ public interface MeetupService {
 
     Object updateMeetup(RequisitionMeetupDTO requisitionMeetupDTO, Integer id);
 
+    void delete(Meetup meetup);
+
 }

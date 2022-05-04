@@ -23,7 +23,7 @@ public interface RegistrationService {
 
     List<ResponseRegistrationDTO> listAllRegistrations();
 
-   // Page<Registration> find(Registration registration, Pageable pageRequest);
+    Page<Registration> find(Registration registration, Pageable pageRequest);
 
     Optional<Registration> getRegistrationByRegistrationAttribute(String registrationAttribute);
 }

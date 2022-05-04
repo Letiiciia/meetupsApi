@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +24,6 @@ public class RequisitionMeetupDTO {
     @NotEmpty
     private boolean registrated;
 
-    private Registration registration;
+    private List<Registration> registration;
 
 }

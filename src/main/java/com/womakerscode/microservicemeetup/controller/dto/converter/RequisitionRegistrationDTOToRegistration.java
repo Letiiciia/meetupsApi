@@ -10,7 +10,7 @@ public class RequisitionRegistrationDTOToRegistration {
         return Registration.builder()
                 .name(requisitionRegistrationDTO.getName())
                 .dateOfRegistration(requisitionRegistrationDTO.getDateOfRegistration())
-                .registration(requisitionRegistrationDTO.getRegistration())
+                .nickName(requisitionRegistrationDTO.getNickName())
                 .meetup(meetup)
                 .build();
     }

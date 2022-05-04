@@ -21,7 +21,7 @@ public class ResponseRegistrationDTO {
 
     private LocalDate dateOfRegistration;
     @NotEmpty
-    private String registration;
+    private String nickName;
 
     private ResponseMeetupDTO meetup;
 }

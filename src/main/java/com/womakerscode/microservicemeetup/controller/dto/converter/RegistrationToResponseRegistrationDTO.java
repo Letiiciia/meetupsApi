@@ -11,7 +11,7 @@ public class RegistrationToResponseRegistrationDTO {
                 .id(registration.getId())
                 .name(registration.getName())
                 .dateOfRegistration(registration.getDateOfRegistration())
-                .registration(registration.getRegistration())
+                .nickName(registration.getNickName())
                 .meetup(buildMeetup(registration.getMeetup()))
                 .build();
     }

@@ -69,7 +69,7 @@ public class RegistrationServiceTest {
     @DisplayName("Should throw Business error when try to save a new registration with a registration duplicated")
     public void shouldNotSaveAsRegistrationDuplicated() {
         Registration registration = createValidRegistration();
-        Mockito.when(repository.existsByRegistration(Mockito.any())).thenReturn(true);
+        Mockito.when(repository.existsByNickName(Mockito.any())).thenReturn(true);
 
         Throwable exception = Assertions.catchThrowable(()-> registrationService.save(registration));
         assertThat(exception)
@@ -97,7 +97,7 @@ public class RegistrationServiceTest {
         assertThat(foundRegistration.get().getId()).isEqualTo(id);
         assertThat(foundRegistration.get().getName()).isEqualTo(registration.getName());
         assertThat(foundRegistration.get().getDateOfRegistration()).isEqualTo(registration.getDateOfRegistration());
-        assertThat(foundRegistration.get().getRegistration()).isEqualTo(registration.getRegistration());
+        assertThat(foundRegistration.get().getNickName()).isEqualTo(registration.getNickName());
 
     }
 
@@ -148,7 +148,7 @@ public class RegistrationServiceTest {
         assertThat(registration.getId()).isEqualTo(updatedRegistration.getId());
         assertThat(registration.getName()).isEqualTo(updatedRegistration.getName());
         assertThat(registration.getDateOfRegistration()).isEqualTo(updatedRegistration.getDateOfRegistration());
-        assertThat(registration.getRegistration()).isEqualTo(updatedRegistration.getRegistration());
+        assertThat(registration.getNickName()).isEqualTo(updatedRegistration.getNickName());
 
     }
 
@@ -185,16 +185,16 @@ public class RegistrationServiceTest {
 
         String registrationAttribute = "1234";
 
-        Mockito.when(repository.findByRegistration(registrationAttribute))
-                .thenReturn(Optional.of(Registration.builder().id(11).registration(registrationAttribute).build()));
+        Mockito.when(repository.findByNickName(registrationAttribute))
+                .thenReturn(Optional.of(Registration.builder().id(11).nickName(registrationAttribute).build()));
 
             Optional<Registration> registration = registrationService.getRegistrationByRegistrationAttribute(registrationAttribute);
 
             assertThat(registration.isPresent()).isTrue();
         assertThat(registration.get().getId()).isEqualTo(11);
-        assertThat(registration.get().getRegistration()).isEqualTo(registrationAttribute);
+        assertThat(registration.get().getNickName()).isEqualTo(registrationAttribute);
 
-        Mockito.verify(repository, Mockito.times(1)).findByRegistration(registrationAttribute);
+        Mockito.verify(repository, Mockito.times(1)).findByNickName(registrationAttribute);
         
     }
 
@@ -204,7 +204,7 @@ public class RegistrationServiceTest {
                 .id(101)
                 .name("Ana Neri")
                 .dateOfRegistration(LocalDate.now())
-                .registration("001")
+                .nickName("001")
                 .build();
 
     }

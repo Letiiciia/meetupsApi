@@ -28,10 +28,10 @@ public class Registration {
     private LocalDate dateOfRegistration;
 
     @Column
-    private String registration;
+    private String nickName;
 
     @JoinColumn(name = "id")
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private Meetup meetup;
 

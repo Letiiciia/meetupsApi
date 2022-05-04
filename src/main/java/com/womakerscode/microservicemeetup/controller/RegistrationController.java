@@ -3,6 +3,7 @@ package com.womakerscode.microservicemeetup.controller;
 import com.womakerscode.microservicemeetup.controller.dto.ResponseRegistrationDTO;
 import com.womakerscode.microservicemeetup.controller.dto.converter.RegistrationToResponseRegistrationDTO;
 import com.womakerscode.microservicemeetup.controller.dto.converter.RequisitionRegistrationDTOToRegistration;
+import com.womakerscode.microservicemeetup.exception.BusinessException;
 import com.womakerscode.microservicemeetup.model.entity.Meetup;
 import com.womakerscode.microservicemeetup.model.entity.Registration;
 import com.womakerscode.microservicemeetup.controller.dto.RequisitionRegistrationDTO;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
+import org.aspectj.bridge.IMessage;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -35,10 +38,8 @@ public class RegistrationController {
     private ModelMapper modelMapper;
 
 
-
-
     @ApiOperation(value = "Creating a new registration")
-    @ApiResponses( value ={
+    @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Registration created with success"),
             @ApiResponse(code = 400, message = "There is any information invalid in the body"),
             @ApiResponse(code = 500, message = "It had an internal trouble")
@@ -47,32 +48,44 @@ public class RegistrationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity create(@RequestBody @Valid RequisitionRegistrationDTO requisitionRegistrationDTO) {
-        Meetup meetup = this.meetupService.findById(requisitionRegistrationDTO.getMeetupId()).get();
+        if (this.meetupService.listAllEvents().isEmpty()) {
+            throw new BusinessException("Don't have any event registrated, create one first");
+        }
+        Meetup meetup = this.meetupService.findById(requisitionRegistrationDTO.getMeetupId()).orElseThrow(() -> new BusinessException("Meetup doesn't exist"));
+
+        String message = null;
 
         Registration registration = RequisitionRegistrationDTOToRegistration.convert(requisitionRegistrationDTO, meetup);
-        registrationService.save(registration);
+        String returnMessage = registrationService.save(registration);
+        if (returnMessage.equals("Registration already created")) {
+            message = "Registration already created";
+        }else{
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+            message = "Created Registration of " + requisitionRegistrationDTO.getName() + " to meetup" + meetup.getMeetupName();
+        }
+
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(message);
     }
 
     @ApiOperation(value = "Getting a specific registration by id")
-    @ApiResponses( value ={
+    @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Getting an registration with success"),
             @ApiResponse(code = 500, message = "It had an internal trouble")
 
     })
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseRegistrationDTO get (@PathVariable Integer id) {
+    public ResponseRegistrationDTO get(@PathVariable Integer id) {
 
         return registrationService
                 .getRegistrationById(id)
                 .map(registration -> modelMapper.map(registration, ResponseRegistrationDTO.class))
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @ApiOperation(value = "Delleting a registration")
-    @ApiResponses( value ={
+    @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Delleting with success"),
             @ApiResponse(code = 500, message = "It had an internal trouble")
 
@@ -86,7 +99,7 @@ public class RegistrationController {
 
 
     @ApiOperation(value = "Updatting a registration")
-    @ApiResponses( value ={
+    @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Updatting with success"),
             @ApiResponse(code = 404, message = "Not Found"),
             @ApiResponse(code = 500, message = "It had an internal trouble")
@@ -95,36 +108,36 @@ public class RegistrationController {
     @PutMapping("{id}")
     public ResponseRegistrationDTO update(@PathVariable Integer id, @RequestBody RequisitionRegistrationDTO requisitionRegistrationDTO) {
         return registrationService.getRegistrationById(id).map(registration -> {
-           registration.setName(requisitionRegistrationDTO.getName());
-           registration.setDateOfRegistration(requisitionRegistrationDTO.getDateOfRegistration());
-           registration = registrationService.update(registration);
+            registration.setName(requisitionRegistrationDTO.getName());
+            registration.setDateOfRegistration(requisitionRegistrationDTO.getDateOfRegistration());
+            registration = registrationService.update(registration);
 
-           return modelMapper.map(registration, ResponseRegistrationDTO.class);
+            return modelMapper.map(registration, ResponseRegistrationDTO.class);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
 
-//    @ApiOperation(value = "Getting all registrations by order")
-//    @ApiResponses( value ={
-//            @ApiResponse(code = 201, message = "Getting all registrations with success"),
-//            @ApiResponse(code = 500, message = "It had an internal trouble")
-//
-//    })
-//    @GetMapping
-//    public Page<ResponseRegistrationDTO> find(ResponseRegistrationDTO dto, Pageable pageRequest) {
-//        Registration filter = modelMapper.map(dto, Registration.class);
-//        Page<Registration> result = registrationService.find(filter, pageRequest);
-//
-//        List<ResponseRegistrationDTO> list = result.getContent()
-//                .stream()
-//                .map(entity -> modelMapper.map(entity, ResponseRegistrationDTO.class))
-//                .collect(Collectors.toList());
-//
-//        return new PageImpl<ResponseRegistrationDTO>(list, pageRequest, result.getTotalElements());
-//    }
-
     @ApiOperation(value = "Getting all registrations by order")
-    @ApiResponses( value ={
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Getting all registrations with success"),
+            @ApiResponse(code = 500, message = "It had an internal trouble")
+
+    })
+    @GetMapping("/Pageable")
+    public Page<ResponseRegistrationDTO> find(ResponseRegistrationDTO dto, Pageable pageRequest) {
+        Registration filter = modelMapper.map(dto, Registration.class);
+        Page<Registration> result = registrationService.find(filter, pageRequest);
+
+        List<ResponseRegistrationDTO> list = result.getContent()
+                .stream()
+                .map(entity -> modelMapper.map(entity, ResponseRegistrationDTO.class))
+                .collect(Collectors.toList());
+
+        return new PageImpl<ResponseRegistrationDTO>(list, pageRequest, result.getTotalElements());
+    }
+
+    @ApiOperation(value = "Getting all registrations")
+    @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Getting all registrations with success"),
             @ApiResponse(code = 500, message = "It had an internal trouble")
 

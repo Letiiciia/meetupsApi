@@ -144,7 +144,7 @@ public class RegistrationControllerTest {
                 .id(id)
                 .name(createNewRegistration().getName())
                 .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .registration(createNewRegistration().getRegistration()).build();
+                .nickName(createNewRegistration().getNickName()).build();
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
@@ -161,7 +161,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
                 .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
-                .andExpect(jsonPath("registration").value(createNewRegistration().getRegistration()));
+                .andExpect(jsonPath("registration").value(createNewRegistration().getNickName()));
 
     }
 
@@ -223,7 +223,7 @@ public class RegistrationControllerTest {
                         .id(id)
                         .name("Julia Neri")
                         .dateOfRegistration(LocalDate.now())
-                        .registration("323")
+                        .nickName("323")
                         .build();
 
         BDDMockito.given(registrationService.getRegistrationById(anyInt()))
@@ -234,7 +234,7 @@ public class RegistrationControllerTest {
                         .id(id)
                         .name("Ana Neri")
                         .dateOfRegistration(LocalDate.now())
-                        .registration("323")
+                        .nickName("323")
                         .build();
 
 
@@ -289,14 +289,14 @@ public class RegistrationControllerTest {
                 .id(id)
                 .name(createNewRegistration().getName())
                 .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .registration(createNewRegistration().getRegistration()).build();
+                .nickName(createNewRegistration().getNickName()).build();
 
         BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
                 .willReturn(new PageImpl<>(Arrays.asList(registration), PageRequest.of(1, 100), 1));
 
 
         String queryString = String.format("?name=%s&dateOfRegistration=%s&page=0&size=100",
-                registration.getRegistration(), registration.getDateOfRegistration());
+                registration.getNickName(), registration.getDateOfRegistration());
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -316,6 +316,6 @@ public class RegistrationControllerTest {
 
 
     private ResponseRegistrationDTO createNewRegistration() {
-        return ResponseRegistrationDTO.builder().id(101).name("Ana Neri").dateOfRegistration(LocalDate.now()).registration("001").build();
+        return ResponseRegistrationDTO.builder().id(101).name("Ana Neri").dateOfRegistration(LocalDate.now()).nickName("001").build();
     }
 }
