@@ -1,6 +1,8 @@
 package com.womakerscode.microservicemeetup.service;
 
+import com.womakerscode.microservicemeetup.controller.dto.RequisitionRegistrationDTO;
 import com.womakerscode.microservicemeetup.exception.BusinessException;
+import com.womakerscode.microservicemeetup.model.entity.Meetup;
 import com.womakerscode.microservicemeetup.model.entity.Registration;
 import com.womakerscode.microservicemeetup.repository.RegistrationRepository;
 import com.womakerscode.microservicemeetup.service.impl.RegistrationServiceImpl;
@@ -49,7 +51,9 @@ public class RegistrationServiceTest {
     @DisplayName("Should save an registration")
     public void saveStudent() {
         //cenario
-        Registration registration = createValidRegistration();
+        //Registration registration = createValidRegistration();
+        Registration registration = this.createNewRegistration();
+        Meetup meetup = this.createNewMeetup();
 
         //execução
         Mockito.when(repository.existsByNickName(Mockito.anyString())).thenReturn(false);
@@ -208,6 +212,14 @@ public class RegistrationServiceTest {
                 .nickName("001")
                 .build();
 
+    }
+
+    private Meetup createNewMeetup() {
+        return Meetup.builder().meetupName("Spring boot Bootcamp").meetupDate(LocalDate.now()).registrated(true).build();
+    }
+
+    private Registration createNewRegistration() {
+        return Registration.builder().name("Ana Neri").dateOfRegistration(LocalDate.now()).nickName("001").meetup(createNewMeetup()).build();
     }
 
 }
