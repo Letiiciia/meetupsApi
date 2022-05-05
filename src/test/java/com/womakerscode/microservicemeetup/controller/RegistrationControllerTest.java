@@ -3,26 +3,28 @@ package com.womakerscode.microservicemeetup.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.womakerscode.microservicemeetup.exception.BusinessException;
+import com.womakerscode.microservicemeetup.controller.dto.RequisitionRegistrationDTO;
 import com.womakerscode.microservicemeetup.controller.dto.ResponseRegistrationDTO;
+import com.womakerscode.microservicemeetup.exception.BusinessException;
+import com.womakerscode.microservicemeetup.model.entity.Meetup;
 import com.womakerscode.microservicemeetup.model.entity.Registration;
 import com.womakerscode.microservicemeetup.service.RegistrationService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.BDDMockito;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -39,57 +41,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@WebMvcTest(controllers = {RegistrationController.class})
 @AutoConfigureMockMvc
 public class RegistrationControllerTest {
-
     static String REGISTRATION_API = "/api/registration";
-
     @Autowired
     MockMvc mockMvc;
-
     @MockBean
     RegistrationService registrationService;
+    @MockBean
+    RegistrationController registrationController;
 
-//    @Test
-//    @DisplayName("Should create a registration with success")
-//    public void createRegistrationTest() throws Exception {
-//
-//        // cenario
-//        ResponseRegistrationDTO registrationDTOBuilder = createNewRegistration();
-//        Registration savedRegistration = Registration.builder().id(101)
-//                .name("Ana Neri").dateOfRegistration(LocalDate.now()).registration("001").build();
-//
-//
-//        // execucao
-//        BDDMockito.given(registrationService.save(any(Registration.class))).willReturn(savedRegistration);
-//
-//
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        objectMapper.findAndRegisterModules();
-//        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-//
-//        String json = objectMapper.writeValueAsString(registrationDTOBuilder);
-//
-//
-//
-//        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-//                .post(REGISTRATION_API)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .accept(MediaType.APPLICATION_JSON)
-//                .content(json);
-//
-//        // verificacao, assert....
-//        mockMvc
-//                .perform(request)
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("id").value(101))
-//                .andExpect(jsonPath("name").value(registrationDTOBuilder.getName()))
-//                .andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
-//                .andExpect(jsonPath("registration").value(registrationDTOBuilder.getRegistration()));
-//    }
+    @Test
+    @DisplayName("Should create a registration with success")
+    public void testCreateRegistration() throws Exception {
+
+        // cenario
+        RequisitionRegistrationDTO requisitionRegistrationDTO = this.createNewRegistration();
+        Meetup meetup = this.createNewMeetup();
+        String message = "Created Registration of " + requisitionRegistrationDTO.getName() + " to meetup " + meetup.getMeetupName();
+
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        String json = objectMapper.writeValueAsString(requisitionRegistrationDTO);
+
+        // execucao
+        BDDMockito.given(registrationController.create(requisitionRegistrationDTO)).willReturn(ResponseEntity.status(HttpStatus.CREATED).body(message));
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(REGISTRATION_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        // verificacao, assert....
+        mockMvc
+                .perform(request);
+
+
+    }
 
     @Test
     @DisplayName("Should throw an exception when not have date enough for the test.")
@@ -113,13 +106,13 @@ public class RegistrationControllerTest {
     @DisplayName("Should throw an exception when try to create a new registration with an registration already created.")
     public void createRegistrationWithDuplicatedRegistration() throws Exception {
 
-        ResponseRegistrationDTO dto = createNewRegistration();
+        RequisitionRegistrationDTO dto = createNewRegistration();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
 
         String json = objectMapper.writeValueAsString(dto);
 
-        BDDMockito.given(registrationService.save(any(Registration.class)))
+        BDDMockito.given(registrationController.create(dto))
                 .willThrow(new BusinessException("Registration already created!"));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
@@ -140,7 +133,7 @@ public class RegistrationControllerTest {
 
         Integer id = 11;
 
-        Registration registration = Registration.builder()
+        ResponseRegistrationDTO registration = ResponseRegistrationDTO.builder()
                 .id(id)
                 .name(createNewRegistration().getName())
                 .dateOfRegistration(createNewRegistration().getDateOfRegistration())
@@ -148,9 +141,9 @@ public class RegistrationControllerTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        //objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
-        BDDMockito.given(registrationService.getRegistrationById(id)).willReturn(Optional.of(registration));
+
+        BDDMockito.given(registrationController.get(id)).willReturn(registration);
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(REGISTRATION_API.concat("/" + id))
@@ -161,7 +154,7 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
                 .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
-                .andExpect(jsonPath("registration").value(createNewRegistration().getNickName()));
+                .andExpect(jsonPath("nickName").value(createNewRegistration().getNickName()));
 
     }
 
@@ -175,7 +168,6 @@ public class RegistrationControllerTest {
                 .accept(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(requestBuilder)
-
                 .andExpect(status().isNotFound());
     }
 
@@ -313,9 +305,11 @@ public class RegistrationControllerTest {
 
     }
 
+    private Meetup createNewMeetup() {
+        return Meetup.builder().meetupName("Spring boot Bootcamp").meetupDate(LocalDate.now()).registrated(true).build();
+    }
 
-
-    private ResponseRegistrationDTO createNewRegistration() {
-        return ResponseRegistrationDTO.builder().id(101).name("Ana Neri").dateOfRegistration(LocalDate.now()).nickName("001").build();
+    private RequisitionRegistrationDTO createNewRegistration() {
+        return RequisitionRegistrationDTO.builder().name("Ana Neri").dateOfRegistration(LocalDate.now()).nickName("001").meetupId(createNewMeetup().getId()).build();
     }
 }

@@ -12,4 +12,6 @@ public interface RegistrationRepository extends JpaRepository<Registration, Inte
     boolean existsByNickName(String nickName);
 
     Optional<Registration> findByNickName(String nickNameAttribute);
+
+
 }

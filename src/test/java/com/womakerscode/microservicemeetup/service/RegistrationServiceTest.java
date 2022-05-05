@@ -45,26 +45,27 @@ public class RegistrationServiceTest {
 
     }
 
-//    @Test
-//    @DisplayName("Should save an registration")
-//    public void saveStudent() {
-//        //cenario
-//        Registration registration = createValidRegistration();
-//
-//        //execução
-//        Mockito.when(repository.existsByRegistration(Mockito.anyString())).thenReturn(false);
-//        Mockito.when(repository.save(registration)).thenReturn(createValidRegistration());
-//
-//        Registration savedRegistration = registrationService.save(registration);
-//
-//        //assert
-//        assertThat(savedRegistration.getId()).isEqualTo(101);
-//        assertThat(savedRegistration.getName()).isEqualTo("Ana Neri");
-//        assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(LocalDate.now());
-//        assertThat(savedRegistration.getRegistration()).isEqualTo("001");
-//
-//
-//    }
+    @Test
+    @DisplayName("Should save an registration")
+    public void saveStudent() {
+        //cenario
+        Registration registration = createValidRegistration();
+
+        //execução
+        Mockito.when(repository.existsByNickName(Mockito.anyString())).thenReturn(false);
+        Mockito.when(repository.save(registration)).thenReturn(createValidRegistration());
+
+        registrationService.save(registration);
+
+
+        //assert
+        assertThat(registration.getId()).isEqualTo(101);
+        assertThat(registration.getName()).isEqualTo("Ana Neri");
+        assertThat(registration.getDateOfRegistration()).isEqualTo(LocalDate.now());
+        assertThat(registration.getNickName()).isEqualTo("001");
+
+
+    }
     @Test
     @DisplayName("Should throw Business error when try to save a new registration with a registration duplicated")
     public void shouldNotSaveAsRegistrationDuplicated() {
