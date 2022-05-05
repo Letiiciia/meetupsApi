@@ -9,6 +9,7 @@ import com.womakerscode.microservicemeetup.exception.BusinessException;
 import com.womakerscode.microservicemeetup.model.entity.Meetup;
 import com.womakerscode.microservicemeetup.model.entity.Registration;
 import com.womakerscode.microservicemeetup.service.RegistrationService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -298,7 +299,7 @@ public class RegistrationControllerTest {
         mockMvc
                 .perform(requestBuilder)
                 .andExpect(status().isOk())
-               // .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
                 .andExpect(jsonPath("totalElements"). value(1))
                 .andExpect(jsonPath("pageable.pageSize"). value(100))
                 .andExpect(jsonPath("pageable.pageNumber"). value(0));
