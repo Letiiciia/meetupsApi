@@ -1,5 +1,5 @@
 <h1 align="center">🚀 Meetups Scheduler 🚀</h1>
-<p align="center">  In this project we have an meetups scheduler using API Spring boot, git and swagger.
+<p align="center">  In this project we have a meetup scheduler using API Spring boot, Java, git and swagger.
 </p>
 
 ## :heavy_check_mark: Table of contents
