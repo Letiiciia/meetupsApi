@@ -29,7 +29,7 @@
 
 ### 🛠 Technologies and Dependencies
 * [Git](#Git)
-* [Java13](#Java13)
+* [Java13](#Java11)
 * [Maven](#Maven)
 * [Springboot2.5.13](#Springboot2.5.13)
 * [JPA](#JPA)
