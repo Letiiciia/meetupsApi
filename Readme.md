@@ -29,8 +29,8 @@
 
 ### 🛠 Technologies and Dependencies
 * [Git](#Git)
-* [Java13](#Java11)
-* [Maven](#Maven)
+* [Java11](#Java11)
+* [Gradle](#Gradle)
 * [Springboot2.5.13](#Springboot2.5.13)
 * [JPA](#JPA)
 * [Lombok](#Lombok)
