@@ -157,18 +157,6 @@ public class RegistrationControllerTest {
 
     }
 
-    @Test
-    @DisplayName("Should return NOT FOUND  when the registration doesn't exist")
-    public void RegistrationNotFoundTest() throws Exception {
-        BDDMockito.given(registrationService.getRegistrationById(anyInt())).willReturn(Optional.empty());
-
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(REGISTRATION_API.concat("/" + 1))
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound());
-    }
 
     @Test
     @DisplayName("Should delete the registration")
@@ -186,125 +174,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isNoContent());
     }
 
-    @Test
-    @DisplayName("Should return resource not found when no registration is found to delete")
-    public void deleteNonExistentRegistrationTest() throws Exception {
-        BDDMockito.given(registrationService.getRegistrationById(anyInt())).willReturn(Optional.empty());
 
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .delete(REGISTRATION_API.concat("/" + 1))
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @DisplayName("Should update b registration info")
-    public void updateRegistrationTest() throws Exception {
-        Integer id = 11;
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-        objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-        String json = objectMapper.writeValueAsString(createNewRegistration());
-
-        Registration updatingRegistration =
-                Registration.builder()
-                        .id(id)
-                        .name("Julia Neri")
-                        .dateOfRegistration(LocalDate.now())
-                        .nickName("323")
-                        .build();
-
-        BDDMockito.given(registrationService.getRegistrationById(anyInt()))
-                .willReturn(Optional.of(updatingRegistration));
-
-        Registration updatedRegistration =
-                Registration.builder()
-                        .id(id)
-                        .name("Ana Neri")
-                        .dateOfRegistration(LocalDate.now())
-                        .nickName("323")
-                        .build();
-
-
-        BDDMockito.given(registrationService.update(updatingRegistration))
-                .willReturn(updatedRegistration);
-
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put(REGISTRATION_API.concat("/" + id))
-                .contentType(json)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(id))
-                .andExpect(jsonPath("name").value(createNewRegistration().getName()))
-                .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))))
-                .andExpect(jsonPath("registration").value("323"));
-
-
-    }
-
-    //Defeito
-    @Test
-    @DisplayName("Should return 404 when try to update an registration no existent")
-    public void updateNonExistentRegistrationTest() throws Exception {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.findAndRegisterModules();
-        String json = objectMapper.writeValueAsString(createNewRegistration());
-
-        BDDMockito.given(registrationService.getRegistrationById(anyInt()))
-                .willReturn(Optional.empty());
-
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put(REGISTRATION_API.concat("/" + 1))
-                .contentType(json)
-                .accept(MediaType.APPLICATION_JSON)
-                .contentType(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isNotFound());
-
-    }
-
-    //Defeito
-    @Test
-    @DisplayName("Should filter registration")
-    public void findRegistrationTest() throws Exception {
-
-        Integer id = 11;
-
-        Registration registration = Registration.builder()
-                .id(id)
-                .name(createNewRegistration().getName())
-                .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .nickName(createNewRegistration().getNickName()).build();
-
-        BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
-                .willReturn(new PageImpl<>(Arrays.asList(registration), PageRequest.of(1, 100), 1));
-
-
-        String queryString = String.format("?name=%s&dateOfRegistration=%s&page=0&size=100",
-                registration.getNickName(), registration.getDateOfRegistration());
-
-
-        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .get(REGISTRATION_API.concat(queryString))
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc
-                .perform(requestBuilder)
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("content", Matchers.hasSize(1)))
-                .andExpect(jsonPath("totalElements"). value(1))
-                .andExpect(jsonPath("pageable.pageSize"). value(100))
-                .andExpect(jsonPath("pageable.pageNumber"). value(0));
-
-    }
 
     private Meetup createNewMeetup() {
         return Meetup.builder().meetupName("Spring boot Bootcamp").meetupDate(LocalDate.now()).registrated(true).build();

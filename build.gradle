@@ -2,11 +2,13 @@ plugins {
 	id 'org.springframework.boot' version '2.5.13'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
+	id 'com.microsoft.azure.azurewebapp' version '1.2.0'
+
 }
 
 group = 'com.womakerscode.microservicemeetup'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '13'
+sourceCompatibility = '11'
 
 configurations {
 	compileOnly {
@@ -36,4 +38,22 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+
+azurewebapp {
+	subscription = '38a3afb3-ef77-415d-9242-b41c9ca7cd7f'
+	resourceGroup = 'app-schedule-bootcamp'
+	appName = 'meetup-bootcamp'
+	pricingTier = 'P1v2'
+	region = 'Brazil South'
+	runtime {
+		os = 'Windows'
+		webContainer = 'Java SE'
+		javaVersion = 'Java 11'
+	}
+	appSettings {}
+	auth {
+		type = 'azure_cli'
+	}
 }

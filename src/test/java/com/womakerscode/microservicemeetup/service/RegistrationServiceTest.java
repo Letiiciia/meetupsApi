@@ -47,42 +47,6 @@ public class RegistrationServiceTest {
 
     }
 
-    @Test
-    @DisplayName("Should save an registration")
-    public void saveStudent() {
-        //cenario
-        //Registration registration = createValidRegistration();
-        Registration registration = this.createNewRegistration();
-        Meetup meetup = this.createNewMeetup();
-
-        //execução
-        Mockito.when(repository.existsByNickName(Mockito.anyString())).thenReturn(false);
-        Mockito.when(repository.save(registration)).thenReturn(createValidRegistration());
-
-        registrationService.save(registration);
-
-
-        //assert
-        assertThat(registration.getId()).isEqualTo(101);
-        assertThat(registration.getName()).isEqualTo("Ana Neri");
-        assertThat(registration.getDateOfRegistration()).isEqualTo(LocalDate.now());
-        assertThat(registration.getNickName()).isEqualTo("001");
-
-
-    }
-    @Test
-    @DisplayName("Should throw Business error when try to save a new registration with a registration duplicated")
-    public void shouldNotSaveAsRegistrationDuplicated() {
-        Registration registration = createValidRegistration();
-        Mockito.when(repository.existsByNickName(Mockito.any())).thenReturn(true);
-
-        Throwable exception = Assertions.catchThrowable(()-> registrationService.save(registration));
-        assertThat(exception)
-                .isInstanceOf(BusinessException.class)
-                .hasMessage("Registration already created");
-
-        Mockito.verify(repository, Mockito.never()).save(registration);
-    }
 
     @Test
     @DisplayName("Should get an Registration by id")
@@ -122,18 +86,6 @@ public class RegistrationServiceTest {
         assertThat(registration.isPresent()).isFalse();
     }
 
-    @Test
-    @DisplayName("Should delete an registration")
-    public void deleteRegistrationTest() {
-        //cenario
-        Registration registration = Registration.builder().id(11).build();
-
-        //execução
-       assertDoesNotThrow(()-> registrationService.delete(registration));
-
-       //verificação
-       Mockito.verify(repository, Mockito.times(1)).delete(registration);
-    }
 
     @Test
     @DisplayName("Should update an registration")
