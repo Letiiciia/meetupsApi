@@ -5,8 +5,8 @@
 ## :heavy_check_mark: Table of contents
 
 <!--ts-->
-- [Features](#Features)
 - [Table of contents ](#table-of-contents)
+- [Features](#Features)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Tests](#tests)
@@ -50,6 +50,7 @@ $ git clone https://github.com/Letiiciia/meetupsApi-WomakersCode
 - Run project
 - Start swagger: http://localhost:8080/swagger-ui.html#
 
+## :heavy_check_mark: Tests
 ### :heavy_check_mark: Add new Registration
 Input:
 POST:"/api/registration"
