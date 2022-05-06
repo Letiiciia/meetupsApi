@@ -38,6 +38,7 @@
 * [junit](#junit)
 
 ### :arrow_forward: How to use this repository
+- Swagger url
 ```bash
 $ Access https://meetup-bootcamp.azurewebsites.net/swagger-ui.html#/meetup-controller/listAllMeetupsUsingGET
 ```
