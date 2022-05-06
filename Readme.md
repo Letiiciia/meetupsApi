@@ -9,7 +9,6 @@
 - [Table of contents ](#table-of-contents)
 - [Installation](#installation)
 - [Usage](#usage)
-    - [Dependencies](#dependencies)
 - [Tests](#tests)
 <!--te-->
 
