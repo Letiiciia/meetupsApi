@@ -121,7 +121,7 @@ public class RegistrationController {
             @ApiResponse(code = 500, message = "It had an internal trouble")
 
     })
-    @GetMapping("/Pageable")
+    @GetMapping("/pageable")
     public Page<ResponseRegistrationDTO> find(ResponseRegistrationDTO dto, Pageable pageRequest) {
         Registration filter = modelMapper.map(dto, Registration.class);
         Page<Registration> result = registrationService.find(filter, pageRequest);

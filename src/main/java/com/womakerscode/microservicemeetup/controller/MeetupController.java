@@ -77,7 +77,7 @@ public class MeetupController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @ApiOperation(value = "Delleting a registration")
+    @ApiOperation(value = "Delleting an Event")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Delleting with success"),
             @ApiResponse(code = 500, message = "It had an internal trouble")
