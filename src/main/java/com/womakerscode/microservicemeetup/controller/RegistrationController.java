@@ -140,7 +140,7 @@ public class RegistrationController {
             @ApiResponse(code = 500, message = "It had an internal trouble")
 
     })
-    @GetMapping
+    @GetMapping("/all")
     ResponseEntity<List<ResponseRegistrationDTO>> listAllRegistrations() {
 
         List<ResponseRegistrationDTO> list = this.registrationService.listAllRegistrations();

@@ -31,7 +31,7 @@ public class Registration {
     private String nickName;
 
     @JoinColumn(name = "id")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JsonIgnore
     private Meetup meetup;
 

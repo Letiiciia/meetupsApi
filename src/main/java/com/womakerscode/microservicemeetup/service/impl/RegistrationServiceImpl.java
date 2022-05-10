@@ -56,6 +56,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         }
 
         Meetup meetup = registration.getMeetup();
+
         List<Registration> registrations = meetup.getRegistration();
         List<Registration> newListRegistrations = new ArrayList<>();
         for (Registration list : registrations) {
