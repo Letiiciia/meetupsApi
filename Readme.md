@@ -29,8 +29,8 @@
 
 ### 🛠 Technologies and Dependencies
 * [Git](#Git)
-* [Java13](#Java13)
-* [Maven](#Maven)
+* [Java11](#Java11)
+* [Gradle](#Gradle)
 * [Springboot2.5.13](#Springboot2.5.13)
 * [JPA](#JPA)
 * [Lombok](#Lombok)
@@ -38,11 +38,14 @@
 * [junit](#junit)
 
 ### :arrow_forward: How to use this repository
+- Swagger url
 ```bash
-$ git clone https://github.com/Letiiciia/meetupsApi-WomakersCode
+$ Access https://meetup-bootcamp.azurewebsites.net/swagger-ui.html#/meetup-controller/listAllMeetupsUsingGET
 ```
-- Open the project in the Editor
-- After that you can RUN
+- You can also use in postman with this url before the resources of each endpoint
+```bash
+$ https://meetup-bootcamp.azurewebsites.net/**
+```
 
 
 ## :arrow_forward: Usage
